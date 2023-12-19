@@ -70,6 +70,7 @@ function displayOfficerInformation(officer) {
     let resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = `
         <h2>${officer['Officer First Name'] || 'N/A'} ${officer['Officer Last Name'] || 'N/A'}</h2>
+        <p>Current Rank: ${officer['Current Rank'] || 'N/A'}</p>
         <p>Identifier (Tax ID): ${officer['Tax ID'] || 'N/A'}</p>
         <p>(The identifier is similar to a badge number and is unique to each officer.)</p>
         <p>Total Complaints: ${officer['Total Complaints'] || 'N/A'}</p>
