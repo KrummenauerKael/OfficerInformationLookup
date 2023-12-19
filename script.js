@@ -74,7 +74,7 @@ function displayOfficerInformation(officer) {
         <p>(The identifier is similar to a badge number and is unique to each officer.)</p>
         <p>Total Complaints: ${officer['Total Complaints'] || 'N/A'}</p>
         <p>Total Substantiated Complaints: ${officer['Total Substantiated Complaints'] || 'N/A'}</p>
-        <p>You can now use this information to search directly inside the NYPD database and see individual complaints and if disciplinary actions were taken</p>
+        <p>You can also use the information provided to search directly in the NYPD database, including individual complaints and if disciplinary measures were taken.</p>
         <p>Simply input the information here: https://www.nyc.gov/site/ccrb/policy/MOS-records.page </p>
     `;
 
