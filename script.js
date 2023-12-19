@@ -7,9 +7,11 @@ document.getElementById('officerForm').addEventListener('submit', function(event
 
 function searchForOfficers(firstName, lastName) {
     let resultsDiv = document.getElementById('results');
+    let optionsDiv = document.getElementById('officerOptions');
     resultsDiv.innerHTML = ''; // Clear previous results
+    optionsDiv.innerHTML = ''; // Also clear officer options
 
-    let csvUrl = 'https://raw.githubusercontent.com/KrummenauerKael/GoodCopBadCop/main/Civilian_Complaint_Review_Board__Police_Officers.csv';
+    let csvUrl = 'https://raw.githubusercontent.com/KrummenauerKael/OfficerInformationLookup/main/Civilian_Complaint_Review_Board__Police_Officers.csv';
 
     fetch(csvUrl)
         .then(response => {
@@ -31,7 +33,6 @@ function searchForOfficers(firstName, lastName) {
                     });
 
                     if (matchingRows.length > 0) {
-                        // Instead of displaying officer information, display options for selection
                         displayOfficerOptions(matchingRows);
                     } else {
                         resultsDiv.innerHTML = `<p>No officers found matching the search criteria.</p>`;
@@ -39,13 +40,13 @@ function searchForOfficers(firstName, lastName) {
                 },
                 error: function(error) {
                     console.error('CSV Parsing Error:', error);
-                    document.getElementById('results').innerHTML += `An error occurred while parsing the CSV data: ${error.message}`;
+                    resultsDiv.innerHTML = `An error occurred while parsing the CSV data: ${error.message}`;
                 }
             });
         })
         .catch(error => {
             console.error('Fetch Error:', error);
-            document.getElementById('results').innerHTML += `An error occurred while fetching the CSV data: ${error.message}`;
+            resultsDiv.innerHTML = `An error occurred while fetching the CSV data: ${error.message}`;
         });
 }
 
@@ -58,36 +59,33 @@ function displayOfficerOptions(officers) {
         button.className = 'officer-button';
         button.textContent = `${officer['Officer First Name']} ${officer['Officer Last Name']}`;
         button.onclick = () => {
-            // Clear the officer options when one is selected
-            optionsDiv.innerHTML = '';
+            optionsDiv.innerHTML = ''; // Clear the officer options when one is selected
             displayOfficerInformation(officer);
-            fetchAdditionalOfficerData(officer['Officer First Name'], officer['Officer Last Name']); // Fetch additional data here
         };
         optionsDiv.appendChild(button);
     });
 }
 
-
 function displayOfficerInformation(officer) {
     let resultsDiv = document.getElementById('results');
-    // Clear previous information
-    resultsDiv.innerHTML = '';
     resultsDiv.innerHTML = `
         <h2>${officer['Officer First Name'] || 'N/A'} ${officer['Officer Last Name'] || 'N/A'}</h2>
         <p>Identifier (Tax ID): ${officer['Tax ID'] || 'N/A'}</p>
         <p>(The identifier is similar to a badge number and is unique to each officer.)</p>
         <p>Total Complaints: ${officer['Total Complaints'] || 'N/A'}</p>
         <p>Total Substantiated Complaints: ${officer['Total Substantiated Complaints'] || 'N/A'}</p>
-	<p>You can now use this information to search directly inside the NYPD database and see individual complaints and if disciplinary actions were taken</p>
-	<p>Simply input the information here: https://www.nyc.gov/site/ccrb/policy/MOS-records.page </p>
+        <p>You can now use this information to search directly inside the NYPD database and see individual complaints and if disciplinary actions were taken</p>
+        <p>Simply input the information here: https://www.nyc.gov/site/ccrb/policy/MOS-records.page </p>
     `;
+
+    fetchAdditionalOfficerData(officer['Officer First Name'], officer['Officer Last Name']);
 }
 
 function fetchAdditionalOfficerData(firstName, lastName) {
     const encodedFirstName = encodeURIComponent(firstName);
     const encodedLastName = encodeURIComponent(lastName);
 
-    let csvUrl = 'https://raw.githubusercontent.com/KrummenauerKael/GoodCopBadCop/main/Citywide_Payroll_Data__Fiscal_Year_.csv';
+    let csvUrl = 'https://raw.githubusercontent.com/KrummenauerKael/OfficerInformationLookup/main/Citywide_Payroll_Data__Fiscal_Year_.csv';
 
     fetch(csvUrl)
         .then(response => {
