@@ -9,91 +9,107 @@ function searchForOfficers(firstName, lastName) {
     let resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = ''; // Clear previous results
 
-    let apiEndpoint = `https://data.cityofnewyork.us/resource/2fir-qns4.json`;
+    let csvUrl = 'https://raw.githubusercontent.com/KrummenauerKael/GoodCopBadCop/main/Civilian_Complaint_Review_Board__Police_Officers.csv';
 
-    fetch(apiEndpoint)
+    fetch(csvUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.json();
+            return response.text();
         })
-        .then(data => {
-            let matchingOfficers = data.filter(officer => {
-                return (firstName === '' || officer.officer_first_name.toLowerCase().includes(firstName.toLowerCase())) &&
-                    (lastName === '' || officer.officer_last_name.toLowerCase().includes(lastName.toLowerCase()));
-            });
+        .then(csvData => {
+            Papa.parse(csvData, {
+                header: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    let matchingRows = results.data.filter(item => {
+                        let fName = item['Officer First Name']?.trim().toUpperCase();
+                        let lName = item['Officer Last Name']?.trim().toUpperCase();
+                        return (firstName === "" || fName === firstName.toUpperCase()) &&
+                               (lastName === "" || lName === lastName.toUpperCase());
+                    });
 
-            if (matchingOfficers.length > 0) {
-                displayOfficerOptions(matchingOfficers);
-            } else {
-                resultsDiv.innerHTML = 'No officers found matching the criteria.';
-            }
+                    if (matchingRows.length > 0) {
+                        // Instead of displaying officer information, display options for selection
+                        displayOfficerOptions(matchingRows);
+                    } else {
+                        resultsDiv.innerHTML = `<p>No officers found matching the search criteria.</p>`;
+                    }
+                },
+                error: function(error) {
+                    console.error('CSV Parsing Error:', error);
+                    document.getElementById('results').innerHTML += `An error occurred while parsing the CSV data: ${error.message}`;
+                }
+            });
         })
         .catch(error => {
             console.error('Fetch Error:', error);
-            resultsDiv.innerHTML = `An error occurred while fetching data: ${error.message}`;
+            document.getElementById('results').innerHTML += `An error occurred while fetching the CSV data: ${error.message}`;
         });
 }
 
 function displayOfficerOptions(officers) {
-    let resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '<p>Select an officer:</p>';
+    let optionsDiv = document.getElementById('officerOptions');
+    optionsDiv.innerHTML = '<p>Select an officer:</p>';
 
     officers.forEach(officer => {
         let button = document.createElement('button');
         button.className = 'officer-button';
-        button.textContent = `${officer.officer_first_name} ${officer.officer_last_name}`;
+        button.textContent = `${officer['Officer First Name']} ${officer['Officer Last Name']}`;
         button.onclick = () => {
+            // Clear the officer options when one is selected
+            optionsDiv.innerHTML = '';
             displayOfficerInformation(officer);
-            fetchAdditionalOfficerData(officer.officer_first_name, officer.officer_last_name);
+            fetchAdditionalOfficerData(officer['Officer First Name'], officer['Officer Last Name']); // Fetch additional data here
         };
-        resultsDiv.appendChild(button);
+        optionsDiv.appendChild(button);
     });
 }
 
+
 function displayOfficerInformation(officer) {
     let resultsDiv = document.getElementById('results');
+    // Clear previous information
+    resultsDiv.innerHTML = '';
     resultsDiv.innerHTML = `
-        <h2>${officer.officer_first_name} ${officer.officer_last_name}</h2>
-        <p>Total Complaints: ${officer.total_complaints || 'N/A'}</p>
-        <p>Total Substantiated Complaints: ${officer.total_substantiated_complaints || 'N/A'}</p>
+        <h2>${officer['Officer First Name'] || 'N/A'} ${officer['Officer Last Name'] || 'N/A'}</h2>
+        <p>Identifier (Tax ID): ${officer['Tax ID'] || 'N/A'}</p>
+        <p>(The identifier is similar to a badge number and is unique to each officer.)</p>
+        <p>Total Complaints: ${officer['Total Complaints'] || 'N/A'}</p>
+        <p>Total Substantiated Complaints: ${officer['Total Substantiated Complaints'] || 'N/A'}</p>
+	<p>You can now use this information to search directly inside the NYPD database and see individual complaints and if disciplinary actions were taken</p>
+	<p>Simply input the information here: https://www.nyc.gov/site/ccrb/policy/MOS-records.page </p>
     `;
 }
 
 function fetchAdditionalOfficerData(firstName, lastName) {
-    // Encode first name and last name for the query
     const encodedFirstName = encodeURIComponent(firstName);
     const encodedLastName = encodeURIComponent(lastName);
 
-    // Fetch the CSV file
-    fetch('Citywide_Payroll_Data__Fiscal_Year_.csv')
+    let csvUrl = 'https://raw.githubusercontent.com/KrummenauerKael/GoodCopBadCop/main/Citywide_Payroll_Data__Fiscal_Year_.csv';
+
+    fetch(csvUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.text(); // Read the CSV data as text
+            return response.text();
         })
         .then(csvData => {
-            // Parse the CSV data using PapaParse
             Papa.parse(csvData, {
-                header: true, // Treat the first row as headers
-                dynamicTyping: true, // Automatically convert numbers
+                header: true,
+                dynamicTyping: true,
                 complete: function(results) {
-                    console.log("Parsed CSV Data:", results.data);
-                    // Find and display the relevant data for the officer
                     let matchingRows = results.data.filter(item =>
-                        item.first_name.trim().toUpperCase() === encodedFirstName.trim().toUpperCase() &&
-                        item.last_name.trim().toUpperCase() === encodedLastName.trim().toUpperCase() &&
-                        (item.agency_name === "Police Department" || item.agency_name === "POLICE DEPARTMENT")
+                        item['First Name']?.trim().toUpperCase() === encodedFirstName.toUpperCase() &&
+                        item['Last Name']?.trim().toUpperCase() === encodedLastName.toUpperCase()
                     );
 
                     if (matchingRows.length > 0) {
-                        const officerData = matchingRows[0];
-                        console.log("Filtered Data:", officerData);
-                        displaySalaryInformation(officerData);
+                        displaySalaryInformation(matchingRows[0]);
                     } else {
-                        document.getElementById('results').innerHTML += '<p>No additional data found for the officer.</p>';
+                        displaySalaryInformation({});
                     }
                 },
                 error: function(error) {
@@ -112,11 +128,11 @@ function displaySalaryInformation(officerData) {
     let resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML += `
         <h3>Salary and Hours Information:</h3>
-        <p>Base Salary: ${officerData.base_salary}</p>
-        <p>Regular Hours: ${officerData.regular_hours}</p>
-        <p>Regular Gross Paid: ${officerData.regular_gross_paid}</p>
-        <p>OT Hours: ${officerData.ot_hours}</p>
-        <p>Total OT Paid: ${officerData.total_ot_paid}</p>
-        <p>Total Other Pay: ${officerData.total_other_pay}</p>
+        <p>Base Salary: ${officerData['Base Salary'] || 'N/A'}</p>
+        <p>Regular Hours: ${officerData['Regular Hours'] || 'N/A'}</p>
+        <p>Regular Gross Paid: ${officerData['Regular Gross Paid'] || 'N/A'}</p>
+        <p>OT Hours: ${officerData['OT Hours'] || 'N/A'}</p>
+        <p>Total OT Paid: ${officerData['Total OT Paid'] || 'N/A'}</p>
+        <p>Total Other Pay: ${officerData['Total Other Pay'] || 'N/A'}</p>
     `;
 }
