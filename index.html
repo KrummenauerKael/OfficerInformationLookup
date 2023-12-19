@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Officer Information Lookup</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Include PapaParse library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Search for Officers</h1>
+        <form id="officerForm">
+            <input type="text" id="firstName" placeholder="Enter First Name">
+            <input type="text" id="lastName" placeholder="Enter Last Name">
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Results will be displayed here -->
+        <div id="results" class="officer-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
