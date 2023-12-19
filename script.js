@@ -124,13 +124,21 @@ function fetchAdditionalOfficerData(firstName, lastName) {
 
 function displaySalaryInformation(officerData) {
     let resultsDiv = document.getElementById('results');
+
+    let regularGrossPaid = officerData['Regular Gross Paid'] || 0;
+    let totalOTPaid = officerData['Total OT Paid'] || 0;
+    let totalOtherPay = officerData['Total Other Pay'] || 0;
+
+    let totalCompensation = regularGrossPaid + totalOTPaid + totalOtherPay;
+
     resultsDiv.innerHTML += `
         <h3>Salary and Hours Information:</h3>
         <p>Base Salary: ${officerData['Base Salary'] || 'N/A'}</p>
         <p>Regular Hours: ${officerData['Regular Hours'] || 'N/A'}</p>
-        <p>Regular Gross Paid: ${officerData['Regular Gross Paid'] || 'N/A'}</p>
+        <p>Regular Gross Paid: ${regularGrossPaid}</p>
         <p>OT Hours: ${officerData['OT Hours'] || 'N/A'}</p>
-        <p>Total OT Paid: ${officerData['Total OT Paid'] || 'N/A'}</p>
-        <p>Total Other Pay: ${officerData['Total Other Pay'] || 'N/A'}</p>
+        <p>Total OT Paid: ${totalOTPaid}</p>
+        <p>Total Other Pay: ${totalOtherPay}</p>
+        <p>Total Compensation: ${totalCompensation}</p>
     `;
 }
