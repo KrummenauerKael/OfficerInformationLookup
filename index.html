@@ -4,30 +4,29 @@
     <meta charset="UTF-8">
     <title>Officer Information Lookup</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Include PapaParse library -->
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Search for Officers</h1>
-        <form id="officerForm">
-            <input type="text" id="firstName" placeholder="Enter First Name">
-            <input type="text" id="lastName" placeholder="Enter Last Name">
-            <button type="submit">Search</button>
-        </form>
+    <div class="page-container"> 
+        <div class="container">
+            <h1>Search for Officers</h1>
+            <form id="officerForm">
+                <input type="text" id="firstName" placeholder="Enter First Name">
+                <input type="text" id="lastName" placeholder="Enter Last Name">
+                <button type="submit">Search</button>
+            </form>
 
-        <!-- Results will be displayed here -->
-        <div id="results" class="officer-container"></div>
+            <div id="results" class="officer-container"></div>
+        </div>
+        
+        <div id="officerOptions" class="officer-options-container"></div>
+
+        
+        <footer class="disclaimer">
+            <p>Data sourced from NYC OpenData. This information is provided for informational purposes only and is not intended for any other use.</p>
+        </footer>
     </div>
-    
-    <div id="officerOptions" class="officer-options-container"></div>
-
-    <div class="disclaimer">
-        <p>Data sourced from <a href="https://data.cityofnewyork.us/City-Government/Citywide-Payroll-Data-Fiscal-Year-/k397-673e" target="_blank">NYC OpenData - Citywide Payroll Data</a> and 
-        <a href="https://data.cityofnewyork.us/Public-Safety/Civilian-Complaint-Review-Board-Police-Officers/2fir-qns4" target="_blank">NYC OpenData - Civilian Complaint Review Board Police Officers</a>. 
-        This information is provided for informational purposes only and is not intended for any other use.</p>
-    </div>
-
 
     <script src="script.js"></script>
 </body>
