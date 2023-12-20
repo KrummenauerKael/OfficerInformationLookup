@@ -59,7 +59,7 @@ button:hover {
 }
 
 .officer-button {
-    /* Added margin to the bottom of each officer button for better spacing */
+    
     margin-bottom: 15px;
 }
 
@@ -89,14 +89,29 @@ button:hover {
 }
 
 .officer-options-container {
-    text-align: center; /* Center-align the container */
+    text-align: center; 
 }
 
 .officer-button {
-    display: block; /* Stack buttons vertically */
-    margin: 10px auto; /* Centralize buttons with automatic horizontal margins */
-    padding: 5px 10px; /* Padding for aesthetic spacing */
-    cursor: pointer; /* Pointer cursor on hover */
+    display: block; 
+    margin: 10px auto; 
+    padding: 5px 10px; 
+    cursor: pointer; 
+}
+
+footer.disclaimer {
+    text-align: center; 
+    padding: 20px 0; 
+    margin-top: auto; 
+    background-color: white; 
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); 
+    border-radius: 0 0 8px 8px; 
+
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 
