@@ -8,25 +8,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
-    <div class="page-container"> 
-        <div class="container">
-            <h1>Search for Officers</h1>
-            <form id="officerForm">
-                <input type="text" id="firstName" placeholder="Enter First Name">
-                <input type="text" id="lastName" placeholder="Enter Last Name">
-                <button type="submit">Search</button>
-            </form>
-
-            <div id="results" class="officer-container"></div>
-        </div>
-        
-        <div id="officerOptions" class="officer-options-container"></div>
+    <div class="container">
+        <h1>Search for Officers</h1>
+        <form id="officerForm">
+            <input type="text" id="firstName" placeholder="Enter First Name">
+            <input type="text" id="lastName" placeholder="Enter Last Name">
+            <button type="submit">Search</button>
+        </form>
 
         
-        <footer class="disclaimer">
-            <p>Data sourced from NYC OpenData. This information is provided for informational purposes only and is not intended for any other use.</p>
-        </footer>
+        <div id="results" class="officer-container"></div>
     </div>
+    
+    <div id="officerOptions" class="officer-options-container"></div>
+
 
     <script src="script.js"></script>
 </body>
